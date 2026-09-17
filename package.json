@@ -20,5 +20,8 @@
     "url": "https://github.com/Joaovilanova/helmet-store/issues"
   },
   "homepage": "https://github.com/Joaovilanova/helmet-store#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
 }
