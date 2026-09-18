@@ -43,18 +43,49 @@ Localmente, `npm start` continua executando `backend/src/server.js`, na porta
 `PORT` ou 3000, e servindo o frontend com Express. Todas as rotas de produtos e
 `GET /api/health` continuam disponíveis.
 
-## SQLite nesta etapa
+## PostgreSQL/Neon e SQLite
+
+Quando `DATABASE_URL` está definida, o backend usa `@neondatabase/serverless`
+por HTTP. A variável é lida somente no servidor. Não há fallback para SQLite
+se a conexão PostgreSQL falhar: a API responde 500 com mensagem genérica.
+
+Na primeira operação de produtos de cada instância, uma transação cria a tabela
+PostgreSQL com `CREATE TABLE IF NOT EXISTS` e insere o seed somente se a tabela
+estiver vazia. Um advisory lock transacional serializa inicializações
+concorrentes; o isolamento Read Committed permite que a instância seguinte veja
+o seed já confirmado. A promessa de inicialização é compartilhada na instância
+e descartada em caso de erro para permitir nova tentativa.
+
+Os quatro produtos são definidos uma única vez em `backend/src/database/seed.js`.
+Os dados atuais do SQLite não são transferidos automaticamente para o Neon.
+Consultas de produtos usam parâmetros separados do SQL nos dois bancos.
+
+Sem `DATABASE_URL`, o desenvolvimento usa o SQLite original. `.env.example`
+documenta variáveis seguras; `npm start` não carrega arquivos `.env` sozinho.
 
 O arquivo local `database/helmet-store.db` e seus dados permanecem intactos.
 Ele continua ignorado pelo Git e não é enviado como parte do catálogo remoto.
 
-Com `VERCEL=1`, a conexão usa o diretório temporário do sistema (`/tmp` na
+Sem `DATABASE_URL` e com `VERCEL=1`, a conexão usa o diretório temporário do sistema (`/tmp` na
 Vercel), pois o restante do filesystem da função é somente leitura. Cada nova
 instância sem banco recebe os quatro produtos fictícios já definidos no projeto.
 O CRUD funciona nessa instância, mas alterações podem desaparecer quando ela for
 substituída e não são compartilhadas entre instâncias. Isso permite demonstrar a
-aplicação, mas não oferece persistência de uma loja em produção. Uma etapa futura
-deverá adotar armazenamento persistente externo.
+aplicação, mas não oferece persistência de uma loja em produção. Com a variável
+Neon configurada, esse fallback temporário não é usado.
+
+## Validação e próxima publicação
+
+Execute `node --test tests/database.test.js` para testar o CRUD em SQLite
+temporário e o driver Neon com transporte HTTP simulado (sem credencial ou rede).
+O teste de transporte não substitui um teste de integração com PostgreSQL real.
+
+A integração Neon já fornece `DATABASE_URL`; ela deve estar disponível no
+ambiente da próxima publicação (Production e/ou Preview). O usuário do banco
+precisa ter permissão para criar a tabela e executar o CRUD. Nenhuma configuração
+de roteamento precisa mudar. Após uma publicação futura autorizada, a primeira
+consulta de produtos inicializará o PostgreSQL. Health indica funcionamento da
+API, não testa a disponibilidade do banco.
 
 Nenhum deploy é realizado pelos scripts deste projeto.
 
