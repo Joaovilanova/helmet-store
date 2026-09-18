@@ -89,6 +89,8 @@ API, não testa a disponibilidade do banco.
 
 Nenhum deploy é realizado pelos scripts deste projeto.
 
+Cadastro, login e sessões persistentes estão documentados em [auth.md](auth.md).
+
 Referências:
 - https://vercel.com/docs/frameworks/backend/express
 - https://vercel.com/docs/functions/runtimes/node-js

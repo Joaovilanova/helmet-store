@@ -27,6 +27,7 @@ module.exports = function createPostgres(connectionString) {
             AS seed(name TEXT, description TEXT, price DOUBLE PRECISION, stock BIGINT, category TEXT)
           WHERE NOT EXISTS (SELECT 1 FROM products)
         `, [JSON.stringify(products)]),
+        ...require('./auth-schema')(true).map(statement => sql.query(statement)),
       ], { isolationLevel: 'ReadCommitted' }).catch(error => {
         initialization = undefined;
         throw error;
@@ -43,7 +44,13 @@ module.exports = function createPostgres(connectionString) {
       const text = statement.replace(/\?/g, () => `$${++position}`);
       const rows = await sql.query(text, parameters);
       // BIGINT chega como string; preserve o contrato numérico da API.
-      return rows.map(row => ({ ...row, id: Number(row.id), price: Number(row.price), stock: Number(row.stock) }));
+      return rows.map(row => {
+        const result = { ...row };
+        for (const field of ['id', 'price', 'stock', 'user_id', 'expires_at', 'hits']) {
+          if (result[field] !== undefined && result[field] !== null) result[field] = Number(result[field]);
+        }
+        return result;
+      });
     },
   };
 };

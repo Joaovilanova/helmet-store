@@ -8,6 +8,7 @@
   <title>Helmet Store — Seu próximo caminho</title>
   <link rel="stylesheet" href="/css/styles.css">
   <script src="/js/app.js" defer></script>
+  <script src="/js/auth.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -15,7 +16,9 @@
     <a class="brand" href="#inicio" aria-label="Helmet Store — início"><span class="brand-mark" aria-hidden="true">H<span>↗</span></span><span>HELMET<span class="brand-light"> STORE</span></span></a>
     <nav aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#capacetes">Capacetes</a><a href="#sobre">Sobre</a></nav>
     <span class="cart" aria-label="Carrinho indisponível nesta demonstração"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 4h2l3 12h11l2-8H6M9 20h.01M18 20h.01" stroke-linecap="round"/></svg><span>Carrinho <small>Em breve</small></span></span>
+    <div class="account-area"><button id="open-auth" class="button button-outline" type="button">Entrar</button><span id="account-name" hidden></span><button id="logout" class="button button-outline" type="button" hidden>Sair</button></div>
   </header>
+  <p id="account-status" class="account-status section-wrap" role="status" aria-live="polite"></p>
   <main id="conteudo">
     <section class="hero section-wrap" id="inicio" aria-labelledby="hero-title">
       <div class="hero-copy"><p class="eyebrow"><span></span> PARA QUEM VIVE O CAMINHO</p><h1 id="hero-title">Seu estilo.<br>Sua segurança.<br><em>Sua próxima estrada.</em></h1><p class="hero-description">Toda jornada começa com uma escolha. Explore capacetes com personalidade e encontre inspiração para o seu próximo caminho.</p><a class="button button-primary" href="#capacetes">Ver capacetes <span aria-hidden="true">↗</span></a><p class="hero-note">Novos caminhos. A mesma paixão por duas rodas.</p></div>
@@ -39,5 +42,18 @@
   <footer class="site-footer section-wrap"><a class="brand" href="#inicio">HELMET<span class="brand-light"> STORE</span></a><p>Uma nova perspectiva para o seu caminho.</p><span>Projeto acadêmico · 2026</span></footer>
   <dialog id="product-dialog" aria-labelledby="detail-title"><div class="dialog-header"><span class="eyebrow">CONHEÇA O MODELO</span><button id="close-dialog" class="close-button" type="button" aria-label="Fechar detalhes">Fechar <span aria-hidden="true">×</span></button></div><h2 id="detail-title">Detalhes do capacete</h2><div id="detail-status" role="status" aria-live="polite"></div><div id="detail-content"></div></dialog>
   <template id="helmet-art"><svg class="helmet-svg" viewBox="0 0 440 350" fill="none" aria-hidden="true"><ellipse cx="225" cy="310" rx="149" ry="13" fill="#000" opacity=".24"/><path d="M72 195C64 105 111 38 211 36c97-3 158 58 165 147l-47 91-132 27-91-42Z" fill="currentColor"/><path d="M92 128c23-60 69-77 121-77 65 0 104 28 127 68-57-26-175-25-248 9Z" fill="#fff" opacity=".15"/><path d="m76 173 130-24 160 12-15 65-160 4-103-24Z" fill="#171f20" stroke="#424c4b" stroke-width="3"/><path d="m108 174 100-14 133 9-5 18-142 9Z" fill="#9cbdba" opacity=".28"/><path d="m97 216 96 21 148-1-21 42-121 26-79-34Z" fill="#222a29"/><path d="m177 234 26 69 121-25 25-48-48 14Z" fill="currentColor"/><path d="m218 269 78-16-9 13-62 14Z" fill="#202725"/><circle cx="112" cy="193" r="17" fill="#394340"/><circle cx="112" cy="193" r="8" stroke="#aab6a9" stroke-width="3"/><path d="m179 66 17-4 16 30-17 1Z" fill="#d6ed74"/><path d="m92 238 15 7m0 0 13 6" stroke="#d6ed74" stroke-width="4"/><path d="m144 288 47 18 130-28" stroke="#131a17" stroke-width="6" stroke-linecap="round"/></svg></template>
+  <dialog id="auth-dialog" aria-labelledby="auth-title">
+    <div class="dialog-header"><span class="eyebrow">SUA CONTA HELMET STORE</span><button id="close-auth" class="close-button" type="button" aria-label="Fechar acesso à conta">Fechar ×</button></div>
+    <h2 id="auth-title">Bem-vindo de volta.</h2>
+    <p id="auth-message" role="status" aria-live="polite">Entre para acessar sua conta.</p>
+    <form id="auth-form">
+      <div id="name-field" hidden><label for="auth-name">Nome</label><input id="auth-name" name="name" type="text" minlength="2" maxlength="60" autocomplete="name" disabled></div>
+      <label for="auth-email">E-mail</label><input id="auth-email" name="email" type="email" maxlength="120" autocomplete="username" required>
+      <label for="auth-password">Senha</label><input id="auth-password" name="password" type="password" minlength="8" maxlength="72" autocomplete="current-password" aria-describedby="password-help" required>
+      <p id="password-help" class="catalog-note">Use de 8 a 72 caracteres. Não reutilize senhas de outros sites.</p>
+      <button id="auth-submit" class="button button-primary" type="submit">Entrar</button>
+    </form>
+    <button id="switch-auth" class="auth-switch" type="button">Ainda não tem conta? Cadastre-se</button>
+  </dialog>
 </body>
 </html>

@@ -5,3 +5,19 @@
 @media(max-width:640px){.site-header{padding:20px 24px;flex-wrap:wrap;gap:18px}.brand{font-size:16px}.brand-mark{font-size:20px}.site-header nav{order:3;flex-basis:100%;justify-content:center;gap:40px;border-top:1px solid var(--line);padding-top:10px}.cart{font-size:11px}.hero{grid-template-columns:1fr;padding-top:36px;padding-bottom:32px;gap:20px}.hero h1{font-size:clamp(36px,9.7vw,58px)}.hero-description{max-width:100%}.hero-art{min-height:300px;width:100%;max-width:420px;justify-self:center}.hero-helmet{width:95%}.art-word{font-size:130px}.art-orbit{width:85%}.art-caption{left:0;font-size:7px}.benefits{grid-template-columns:1fr;padding-block:28px;gap:22px}.benefits p{max-width:none}.benefits article{gap:20px}.section-heading{display:block}.section-heading>p{margin-top:16px}.catalog{padding-block:46px}.product-grid{gap:14px}.product-info{padding:14px}.product-info h3{font-size:17px}.price{font-size:20px}.product-visual{padding-inline:0}.visual-label{font-size:6px;left:10px}.about{grid-template-columns:1fr;gap:26px;padding-block:36px}.site-footer{flex-direction:column;align-items:flex-start;gap:14px}}
 @media(max-width:380px){.product-grid{grid-template-columns:1fr}.site-header nav{gap:30px}.cart svg{display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+
+.account-area{display:flex;align-items:center;gap:12px;min-width:0}
+.account-area .button{min-height:40px;padding:10px 16px}
+#account-name{font-size:13px;max-width:140px;overflow-wrap:anywhere}
+.account-status{font-size:13px;color:var(--accent);margin:0;padding-block:12px}
+.account-status:empty{display:none}
+#auth-message{font-size:14px;color:var(--muted);min-height:24px}
+#auth-form label{display:block;font-size:13px;margin:18px 0 8px}
+#auth-form input{width:100%;background:var(--bg);color:var(--text);border:1px solid #59634f;border-radius:4px;padding:13px;font:inherit;min-width:0}
+#auth-form input:hover{border-color:var(--accent)}
+#auth-form input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+#auth-form .button{width:100%;margin-top:24px}
+.auth-switch{display:block;margin:24px auto 0;background:none;border:none;color:var(--accent);font-size:13px;padding:10px}
+button:disabled{opacity:.6;cursor:wait}
+@media(max-width:900px){.site-header{flex-wrap:wrap}.account-area{margin-left:auto}.site-header nav{gap:20px}}
+@media(max-width:640px){.account-area{order:2}.site-header .cart{margin-left:auto}.site-header nav{order:3}#account-name{max-width:170px}}

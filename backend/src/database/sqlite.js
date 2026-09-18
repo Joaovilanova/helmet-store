@@ -4,6 +4,8 @@ const products = require('./seed');
 module.exports = function createSqlite(filename) {
   const db = new Database(filename);
   try {
+    db.pragma('foreign_keys = ON');
+    for (const statement of require('./auth-schema')()) db.exec(statement);
     db.exec(`
       CREATE TABLE IF NOT EXISTS products (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -131,6 +131,13 @@ test('Neon: driver real com transporte HTTP simulado, sem rede/credenciais reais
       return Response.json({ results: body.queries.map(() => empty) });
     }
     queries.push(body);
+    if (body.query.includes('FROM users')) {
+      return Response.json({
+        fields: [{ name: 'id', dataTypeID: 20 }, { name: 'name', dataTypeID: 25 },
+          { name: 'email', dataTypeID: 25 }, { name: 'role', dataTypeID: 25 }],
+        rows: [['1', 'Pessoa', 'person@example.test', 'customer']], rowCount: 1, command: 'SELECT',
+      });
+    }
     return Response.json({
       fields: [{ name: 'id', dataTypeID: 20 }, { name: 'price', dataTypeID: 701 }, { name: 'stock', dataTypeID: 20 }],
       rows: [['1', '249.9', '12']], rowCount: 1, command: 'SELECT',
@@ -154,6 +161,13 @@ test('Neon: driver real com transporte HTTP simulado, sem rede/credenciais reais
     assert.deepEqual(JSON.parse(batches[0].queries[2].params[0]), seed);
     assert.equal(queries[0].query, 'SELECT * FROM products WHERE id = $1');
     assert.equal(queries[1].params[0], "name '?'");
+    const schema = batches[0].queries.map(item => item.query).join('\n');
+    assert.match(schema, /CREATE TABLE IF NOT EXISTS users/);
+    assert.match(schema, /email TEXT NOT NULL UNIQUE/);
+    assert.match(schema, /CREATE TABLE IF NOT EXISTS sessions/);
+    assert.match(schema, /CREATE TABLE IF NOT EXISTS auth_limits/);
+    const users = await pg.query('SELECT id, name, email, role FROM users WHERE email = ?', ['person@example.test']);
+    assert.deepEqual(users, [{ id: 1, name: 'Pessoa', email: 'person@example.test', role: 'customer' }]);
     const retry = createPostgres(address.href);
     fail = true;
     await assert.rejects(retry.query('SELECT * FROM products'));
