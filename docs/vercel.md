@@ -18,7 +18,8 @@ passar pela função ou depender de `express.static()` na Vercel.
 O projeto declara Node 22.x. O script `npm run vercel-build` copia o frontend de
 `frontend/src/` para `public/`, pasta publicada pela CDN da Vercel. Essa saída é
 gerada e ignorada pelo Git; edite somente os arquivos em `frontend/src/`.
-O build verifica a presença dos três arquivos essenciais antes de concluir.
+O build verifica a presença de index.html, css/styles.css, js/app.js,
+js/auth.js e js/admin.js antes de concluir.
 
 ## Diagnóstico do deployment anterior
 
@@ -49,7 +50,7 @@ Quando `DATABASE_URL` está definida, o backend usa `@neondatabase/serverless`
 por HTTP. A variável é lida somente no servidor. Não há fallback para SQLite
 se a conexão PostgreSQL falhar: a API responde 500 com mensagem genérica.
 
-Na primeira operação de produtos de cada instância, uma transação cria a tabela
+Na primeira operação que acessa o banco em cada instância, uma transação cria a tabela
 PostgreSQL com `CREATE TABLE IF NOT EXISTS` e insere o seed somente se a tabela
 estiver vazia. Um advisory lock transacional serializa inicializações
 concorrentes; o isolamento Read Committed permite que a instância seguinte veja
