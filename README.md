@@ -151,6 +151,29 @@ O cadastro cria somente `customer`. O cliente não escolhe a role. Uma conta exi
 - **Interface:** dados dinâmicos são inseridos com `textContent`, evitando sua interpretação como HTML.
 - **Segredos:** configuração privada por variáveis de ambiente; respostas genéricas em erros internos. Credenciais, informações de conexão e dados privados de sessão não devem ser publicados ou versionados.
 
+## Segurança e validação no Front-End
+
+Os formulários usam campos obrigatórios (`required`), tipos adequados (`email`,
+`password` e `number`) e limites de caracteres. O cadastro exige nome de 2–60,
+e-mail de até 120 e senha de 8–72 caracteres; o login mantém os mesmos limites
+de e-mail e senha. O nome só é obrigatório no modo cadastro. Os atributos
+`autocomplete` distinguem nome, identificação, senha atual e nova senha.
+
+Produtos exigem nome de até 120, descrição de até 2000 e categoria de até 80
+caracteres. O preço usa mínimo 0,01 e passo 0,01; o estoque usa mínimo zero e
+passo inteiro. O JavaScript verifica novamente os limites, campos vazios,
+formato do e-mail, preço finito positivo e estoque inteiro seguro não negativo.
+Textos são aparados quando apropriado; senhas não são aparadas ou truncadas.
+Espaços internos em e-mail são rejeitados, não removidos silenciosamente.
+
+O backend também verifica essas regras importantes, incluindo os limites de
+texto dos produtos: atributos HTML e JavaScript podem ser contornados. Validação
+verifica se os dados são aceitáveis; autorização verifica se a sessão pertence a
+um usuário com permissão para executar a operação. As duas continuam necessárias.
+Dados dinâmicos são exibidos com `textContent` e erros possuem mensagens amigáveis.
+
+Máscaras de entrada não foram aplicadas porque o sistema não coleta dados como CPF, telefone ou CEP; foram utilizados tipos de input e validações adequados aos campos existentes.
+
 ## Banco de dados
 
 O desenvolvimento usa **SQLite**, armazenado em arquivo local. Em produção, a conexão configurada no servidor seleciona **PostgreSQL/Neon**. Se PostgreSQL estiver selecionado e falhar, não há troca silenciosa para SQLite.

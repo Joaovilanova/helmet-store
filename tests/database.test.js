@@ -81,6 +81,9 @@ test('SQLite isolado: seed, CRUD HTTP, validações e erros seguros', async () =
     const created = await request('POST', '/api/products', 201, data);
     assert.deepEqual(created, { id: created.id, ...data });
     const invalid = [{}];
+    for (const [field, limit] of Object.entries({ name: 120, description: 2000, category: 80 })) {
+      invalid.push({ ...data, [field]: 'a'.repeat(limit + 1) });
+    }
     for (const key of Object.keys(data)) {
       const missing = { ...data }; delete missing[key]; invalid.push(missing);
     }

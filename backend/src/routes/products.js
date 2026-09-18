@@ -25,9 +25,12 @@ function validateProduct(data) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) {
     return 'Informe os dados do produto em um objeto JSON.';
   }
-  for (const field of ['name', 'description', 'category']) {
+  for (const [field, limit] of Object.entries({ name: 120, description: 2000, category: 80 })) {
     if (typeof data[field] !== 'string' || data[field].trim().length === 0) {
       return `O campo ${field} deve ser uma string não vazia.`;
+    }
+    if (data[field].length > limit) {
+      return `O campo ${field} deve ter no máximo ${limit} caracteres.`;
     }
   }
   if (typeof data.price !== 'number' || !Number.isFinite(data.price) || data.price <= 0) {

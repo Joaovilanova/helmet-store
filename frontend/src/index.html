@@ -61,9 +61,9 @@
     <h2 id="auth-title">Bem-vindo de volta.</h2>
     <p id="auth-message" role="status" aria-live="polite">Entre para acessar sua conta.</p>
     <form id="auth-form">
-      <div id="name-field" hidden><label for="auth-name">Nome</label><input id="auth-name" name="name" type="text" minlength="2" maxlength="60" autocomplete="name" disabled></div>
-      <label for="auth-email">E-mail</label><input id="auth-email" name="email" type="email" maxlength="120" autocomplete="username" required>
-      <label for="auth-password">Senha</label><input id="auth-password" name="password" type="password" minlength="8" maxlength="72" autocomplete="current-password" aria-describedby="password-help" required>
+      <div id="name-field" hidden><label for="auth-name">Nome</label><input id="auth-name" name="name" type="text" minlength="2" maxlength="60" autocomplete="name" placeholder="Seu nome completo" autocapitalize="words" disabled></div>
+      <label for="auth-email">E-mail</label><input id="auth-email" name="email" type="email" maxlength="120" autocomplete="username" placeholder="voce@exemplo.com" inputmode="email" autocapitalize="none" spellcheck="false" required>
+      <label for="auth-password">Senha</label><input id="auth-password" name="password" type="password" minlength="8" maxlength="72" autocomplete="current-password" placeholder="De 8 a 72 caracteres" autocapitalize="none" spellcheck="false" aria-describedby="password-help" required>
       <p id="password-help" class="catalog-note">Use de 8 a 72 caracteres. Não reutilize senhas de outros sites.</p>
       <button id="auth-submit" class="button button-primary" type="submit">Entrar</button>
     </form>

@@ -35,8 +35,11 @@ test('Autenticação HTTP com SQLite isolado e sessões persistentes', async t =
   try {
     await t.test('me sem autenticação', () => request('me', 401));
     await t.test('cadastro inválido e bloqueio CSRF', async () => {
-      for (const data of [{}, { ...profile, name: ' ' }, { ...profile, name: 'a' }, { ...profile, name: 'a'.repeat(61) },
-        { ...profile, email: 'inválido' }, { ...profile, email: 'a'.repeat(121) + '@x.test' },
+      const missingFields = Object.keys(profile).filter(key => key !== 'role').map(key => {
+        const data = { ...profile }; delete data[key]; return data;
+      });
+      for (const data of [{}, ...missingFields, { ...profile, name: ' ' }, { ...profile, name: 'a' }, { ...profile, name: 'a'.repeat(61) },
+        { ...profile, email: 'inválido' }, { ...profile, email: 'a b@example.test' }, { ...profile, email: 'a'.repeat(121) + '@x.test' },
         { ...profile, password: 'short' }, { ...profile, password: 'a'.repeat(73) }]) await request('register', 400, data);
       await request('register', 403, profile, null, false);
     });

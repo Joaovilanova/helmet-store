@@ -73,8 +73,8 @@ independentemente da interface. Sessão expirada ou role revogada oculta o paine
 
 O formulário exige todos os campos, textos não vazios após trim, nome até 120,
 descrição até 2000 e categoria até 80 caracteres, preço a partir de 0,01 (passo
-0,01) e estoque inteiro seguro não negativo. Esses limites de texto são da
-interface; o backend preserva suas validações anteriores de strings não vazias,
+0,01) e estoque inteiro seguro não negativo. Os limites de texto também são
+validados no backend, junto às regras de strings não vazias,
 preço finito positivo, estoque inteiro seguro não negativo e ID inteiro positivo.
 Dados dinâmicos usam textContent. Todos os erros são exibidos como texto.
 

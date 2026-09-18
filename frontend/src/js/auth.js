@@ -7,6 +7,30 @@
   let register = false;
   let revision = 0;
 
+  const formatName = value => value.replace(/\s+/gu, ' ').trimStart();
+  const formatEmail = value => value.trim().toLowerCase();
+
+  function formatField(field, format) {
+    const start = field.selectionStart;
+    const end = field.selectionEnd;
+    const original = field.value;
+    const formatted = format(original);
+    if (original === formatted) return;
+    field.value = formatted;
+    if (start !== null && end !== null) {
+      field.setSelectionRange(format(original.slice(0, start)).length, format(original.slice(0, end)).length);
+    }
+  }
+
+  for (const [selector, format] of [['#auth-name', formatName], ['#auth-email', formatEmail]]) {
+    const field = $(selector);
+    field.addEventListener('input', event => {
+      if (!event.isComposing) formatField(field, format);
+    });
+    field.addEventListener('compositionend', () => formatField(field, format));
+    field.addEventListener('blur', () => { field.value = format(field.value).trim(); });
+  }
+
   function setUser(user) {
     $('#open-auth').hidden = Boolean(user);
     $('#account-name').hidden = !user;
@@ -55,8 +79,8 @@
 
   form.addEventListener('submit', async event => {
     event.preventDefault();
-    const name = $('#auth-name').value.trim();
-    const email = $('#auth-email').value.trim().toLowerCase();
+    const name = formatName($('#auth-name').value).trim();
+    const email = formatEmail($('#auth-email').value);
     const password = $('#auth-password').value;
     $('#auth-email').value = email;
     $('#auth-name').value = name;
