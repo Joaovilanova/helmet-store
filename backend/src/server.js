@@ -14,6 +14,10 @@ app.get('/api/health', (req, res) => {
 
 app.use(express.static(path.resolve(__dirname, '../../frontend/src')));
 
-app.listen(port, () => {
-  console.log(`API Helmet Store executando na porta ${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`API Helmet Store executando na porta ${port}`);
+  });
+}
+
+module.exports = app;

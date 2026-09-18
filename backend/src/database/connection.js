@@ -1,7 +1,12 @@
 const Database = require('better-sqlite3');
 const path = require('node:path');
+const os = require('node:os');
 
-const databasePath = path.resolve(__dirname, '../../../database/helmet-store.db');
+// Na Vercel, SQLite serve apenas como demonstração temporária por instância.
+// O banco local permanece no caminho original e não é copiado nem alterado.
+const databasePath = process.env.VERCEL === '1'
+  ? path.join(os.tmpdir(), 'helmet-store.db')
+  : path.resolve(__dirname, '../../../database/helmet-store.db');
 const db = new Database(databasePath);
 
 db.exec(`
