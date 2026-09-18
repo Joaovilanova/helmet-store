@@ -3,6 +3,7 @@ const { createHash } = require('node:crypto');
 const db = require('../database/connection');
 const { hashPassword, verifyPassword } = require('../auth/password');
 const session = require('../auth/session');
+const { identifyUser } = require('../auth/middleware');
 const router = express.Router();
 const publicUser = ({ id, name, email, role }) => ({ id, name, email, role });
 
@@ -58,8 +59,8 @@ router.post('/login', async (req, res) => {
   res.json({ message: 'Login concluído.', user: publicUser(user) });
 });
 
-router.get('/me', async (req, res) => {
-  const user = await session.currentUser(req);
+router.get('/me', identifyUser, async (req, res) => {
+  const user = req.user;
   if (!user) {
     session.clear(res);
     return res.status(401).json({ message: 'Entre para acessar sua conta.' });

@@ -92,4 +92,5 @@ document.querySelector('.hero-helmet').append(document.querySelector('#helmet-ar
 document.querySelector('#close-dialog').addEventListener('click', () => dialog.close());
 dialog.addEventListener('close', () => detailController?.abort());
 retry.addEventListener('click', loadProducts);
+window.addEventListener('helmet:products-changed', loadProducts);
 loadProducts();

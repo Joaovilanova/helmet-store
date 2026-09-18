@@ -7,6 +7,22 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
 
 .account-area{display:flex;align-items:center;gap:12px;min-width:0}
+.account-area{flex-wrap:wrap}
+.admin-panel{padding-block:48px;border-top:1px solid var(--line)}
+.admin-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.admin-actions .button-primary{margin-top:0}
+.admin-form{max-width:700px;background:var(--surface);padding:24px;border:1px solid var(--line);border-radius:6px;margin-bottom:24px}
+.admin-form label{display:block;font-size:13px;margin:16px 0 8px}
+.admin-form input,.admin-form textarea{width:100%;min-width:0;padding:12px;background:var(--bg);color:var(--text);border:1px solid #59634f;border-radius:4px;font:inherit}
+.admin-form textarea{resize:vertical}
+.admin-form input:focus-visible,.admin-form textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.admin-form input:hover,.admin-form textarea:hover{border-color:var(--accent)}
+.admin-form .admin-actions{margin-top:24px}
+.admin-numbers{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.admin-row{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:20px 0;border-bottom:1px solid var(--line)}
+.admin-row>div{min-width:0}.admin-row h3,.admin-row p{overflow-wrap:anywhere}
+.admin-row h3{font-size:18px;margin-bottom:8px}.admin-row p{font-size:13px;color:var(--muted);margin:0}
+@media(max-width:640px){.admin-row{align-items:flex-start;flex-direction:column}.admin-panel .section-heading .admin-actions{margin-top:20px}.admin-form{padding:16px}.admin-numbers{grid-template-columns:1fr;gap:0}}
 .account-area .button{min-height:40px;padding:10px 16px}
 #account-name{font-size:13px;max-width:140px;overflow-wrap:anywhere}
 .account-status{font-size:13px;color:var(--accent);margin:0;padding-block:12px}

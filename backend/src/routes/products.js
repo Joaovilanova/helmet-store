@@ -1,7 +1,16 @@
 const express = require('express');
 const products = require('../database/products');
+const { identifyUser, requireAuthentication, requireAdmin, requireSafeRequest } = require('../auth/middleware');
 
 const router = express.Router();
+
+const adminAccess = [identifyUser, requireAuthentication, requireAdmin, requireSafeRequest];
+router.use((req, res, next) => {
+  if (['POST', 'PUT', 'DELETE'].includes(req.method)) return adminRouter(req, res, next);
+  next();
+});
+const adminRouter = express.Router();
+adminRouter.use(...adminAccess);
 
 router.param('id', (req, res, next, value) => {
   const id = Number(value);

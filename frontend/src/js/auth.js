@@ -12,6 +12,7 @@
     $('#account-name').hidden = !user;
     $('#account-name').textContent = user ? user.name : '';
     $('#logout').hidden = !user;
+    window.dispatchEvent(new CustomEvent('helmet:auth', { detail: user }));
   }
 
   function mode(isRegister) {
@@ -97,6 +98,7 @@
   });
 
   const initialRevision = revision;
+  window.addEventListener('helmet:session-expired', () => { revision++; setUser(null); });
   request('me').then(data => { if (revision === initialRevision) setUser(data.user); })
     .catch(error => {
       if (revision === initialRevision && error.status !== 401) $('#account-status').textContent = error.message;

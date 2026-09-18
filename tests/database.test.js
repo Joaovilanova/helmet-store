@@ -59,13 +59,14 @@ test('SQLite isolado: seed, CRUD HTTP, validações e erros seguros', async () =
   const connection = require('../backend/src/database/connection');
   const originalQuery = connection.query;
   connection.query = sqlite.query;
+  const admin = await require('./helpers/session')(sqlite, 'admin');
   const app = require('../api/index');
   const server = app.listen(0, '127.0.0.1');
   await new Promise(resolve => server.once('listening', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
   async function request(method, route, status, body) {
     const res = await fetch(base + route, {
-      method, headers: { 'Content-Type': 'application/json' },
+      method, headers: { 'Content-Type': 'application/json', 'X-Helmet-Request': '1', Cookie: admin.cookie },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
     assert.equal(res.status, status, `${method} ${route}`);

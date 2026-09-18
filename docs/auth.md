@@ -55,8 +55,10 @@ Isso é uma proteção básica por conta, não substitui controles de tráfego g
 
 ## Escopo e publicação
 
-Catálogo e CRUD continuam com as permissões anteriores. Role está preparada,
-mas a autorização administrativa das escritas de produtos será uma próxima etapa.
+O catálogo (GET) permanece público. POST, PUT e DELETE de produtos exigem sessão
+válida e role admin consultada no banco a cada requisição (401 sem sessão, 403
+para customer). As escritas também exigem X-Helmet-Request: 1; POST/PUT exigem JSON.
+Veja [admin.md](admin.md) para a interface e a promoção segura de uma conta existente.
 Não há verificação de email ou recuperação de senha nesta versão.
 
 Na Vercel, mantenha DATABASE_URL no ambiente publicado. Não é preciso um novo
