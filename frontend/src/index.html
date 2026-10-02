@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111312">
-  <meta name="description" content="Helmet Store: um projeto acadêmico de loja fictícia de capacetes. Conheça nosso catálogo demonstrativo.">
+  <meta name="description" content="Helmet Store: explore nosso catálogo de capacetes. Loja em desenvolvimento, ainda sem vendas online.">
   <title>Helmet Store — Seu próximo caminho</title>
   <link rel="stylesheet" href="/css/styles.css">
   <script src="/js/app.js" defer></script>
@@ -15,9 +15,13 @@
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
   <header class="site-header">
     <a class="brand" href="#inicio" aria-label="Helmet Store — início"><span class="brand-mark" aria-hidden="true">H<span>↗</span></span><span>HELMET<span class="brand-light"> STORE</span></span></a>
-    <nav aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#capacetes">Capacetes</a><a href="#sobre">Sobre</a></nav>
-    <span class="cart" aria-label="Carrinho indisponível nesta demonstração"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 4h2l3 12h11l2-8H6M9 20h.01M18 20h.01" stroke-linecap="round"/></svg><span>Carrinho <small>Em breve</small></span></span>
-    <div class="account-area"><button id="open-auth" class="button button-outline" type="button">Entrar</button><span id="account-name" hidden></span><button id="open-admin" class="button button-outline" type="button" hidden>Admin</button><button id="logout" class="button button-outline" type="button" hidden>Sair</button></div>
+    <nav aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#capacetes">Catálogo</a><a href="#sobre">Sobre</a></nav>
+    <span class="cart" aria-label="Carrinho em desenvolvimento, ainda indisponível"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 4h2l3 12h11l2-8H6M9 20h.01M18 20h.01" stroke-linecap="round"/></svg><span>Carrinho <small>Em breve</small></span></span>
+    <div class="account-area"><button id="open-auth" class="button button-outline" type="button">Minha Conta / Entrar</button><button id="open-account" class="button button-outline" type="button" hidden>Minha Conta</button><span id="account-name" hidden></span><button id="open-admin" class="button button-outline" type="button" hidden>Admin</button><button id="logout" class="button button-outline" type="button" hidden>Sair</button></div>
+    <form id="catalog-search" class="catalog-search" role="search" aria-label="Buscar no catálogo">
+      <label for="search-products">Buscar capacetes</label>
+      <div><input id="search-products" name="q" type="search" maxlength="120" placeholder="Nome, categoria ou descrição" aria-controls="product-grid"><button class="button button-outline" type="submit">Buscar</button></div>
+    </form>
   </header>
   <p id="account-status" class="account-status section-wrap" role="status" aria-live="polite"></p>
   <main id="conteudo">
@@ -38,7 +42,7 @@
       <noscript><p>Ative o JavaScript para carregar o catálogo de capacetes.</p></noscript>
       <p class="catalog-note">Modelos, preços e estoques fictícios. Ilustrações conceituais, sem certificações ou especificações técnicas reais.</p>
     </section>
-    <section class="about section-wrap" id="sobre" aria-labelledby="about-title"><div><p class="eyebrow">DUAS RODAS. MUITAS POSSIBILIDADES.</p><h2 id="about-title">Sobre a<br>Helmet Store<span>.</span></h2></div><div><p>Uma loja fictícia.<br><strong>Uma experiência feita para aprender.</strong></p><p>A Helmet Store é um projeto acadêmico que conecta tecnologia e a paixão pelo universo das motocicletas. Este catálogo demonstra uma experiência de loja integrada a uma API.</p><span class="academic-label">PROJETO ACADÊMICO · SEM VENDAS REAIS</span></div></section>
+    <section class="about section-wrap" id="sobre" aria-labelledby="about-title"><div><p class="eyebrow">DUAS RODAS. MUITAS POSSIBILIDADES.</p><h2 id="about-title">Sobre a<br>Helmet Store<span>.</span></h2></div><div><p>Sua próxima estrada.<br><strong>Uma loja em evolução.</strong></p><p>A Helmet Store nasceu como projeto acadêmico e está evoluindo para uma loja de capacetes. Explore o catálogo e acompanhe essa construção. Os produtos atuais são demonstrativos; compras e pagamentos ainda não estão disponíveis.</p><span class="academic-label">LOJA EM DESENVOLVIMENTO · SEM VENDAS NESTA ETAPA</span></div></section>
     <section id="admin-panel" class="section-wrap admin-panel" aria-labelledby="admin-title" hidden>
       <div class="section-heading"><div><p class="eyebrow">ADMINISTRAÇÃO</p><h2 id="admin-title">Gerenciar produtos</h2></div><div class="admin-actions"><button id="new-product" class="button button-primary" type="button">Novo produto</button><button id="refresh-admin" class="button button-outline" type="button">Atualizar lista</button><button id="close-admin" class="button button-outline" type="button">Fechar</button></div></div>
       <p id="admin-message" role="status" aria-live="polite"></p>
@@ -53,9 +57,16 @@
       <div id="admin-products" class="admin-products"></div>
     </section>
   </main>
-  <footer class="site-footer section-wrap"><a class="brand" href="#inicio">HELMET<span class="brand-light"> STORE</span></a><p>Uma nova perspectiva para o seu caminho.</p><span>Projeto acadêmico · 2026</span></footer>
+  <footer class="site-footer section-wrap"><a class="brand" href="#inicio">HELMET<span class="brand-light"> STORE</span></a><p>Uma nova perspectiva para o seu caminho.</p><span>Helmet Store · Em desenvolvimento</span></footer>
   <dialog id="product-dialog" aria-labelledby="detail-title"><div class="dialog-header"><span class="eyebrow">CONHEÇA O MODELO</span><button id="close-dialog" class="close-button" type="button" aria-label="Fechar detalhes">Fechar <span aria-hidden="true">×</span></button></div><h2 id="detail-title">Detalhes do capacete</h2><div id="detail-status" role="status" aria-live="polite"></div><div id="detail-content"></div></dialog>
   <template id="helmet-art"><svg class="helmet-svg" viewBox="0 0 440 350" fill="none" aria-hidden="true"><ellipse cx="225" cy="310" rx="149" ry="13" fill="#000" opacity=".24"/><path d="M72 195C64 105 111 38 211 36c97-3 158 58 165 147l-47 91-132 27-91-42Z" fill="currentColor"/><path d="M92 128c23-60 69-77 121-77 65 0 104 28 127 68-57-26-175-25-248 9Z" fill="#fff" opacity=".15"/><path d="m76 173 130-24 160 12-15 65-160 4-103-24Z" fill="#171f20" stroke="#424c4b" stroke-width="3"/><path d="m108 174 100-14 133 9-5 18-142 9Z" fill="#9cbdba" opacity=".28"/><path d="m97 216 96 21 148-1-21 42-121 26-79-34Z" fill="#222a29"/><path d="m177 234 26 69 121-25 25-48-48 14Z" fill="currentColor"/><path d="m218 269 78-16-9 13-62 14Z" fill="#202725"/><circle cx="112" cy="193" r="17" fill="#394340"/><circle cx="112" cy="193" r="8" stroke="#aab6a9" stroke-width="3"/><path d="m179 66 17-4 16 30-17 1Z" fill="#d6ed74"/><path d="m92 238 15 7m0 0 13 6" stroke="#d6ed74" stroke-width="4"/><path d="m144 288 47 18 130-28" stroke="#131a17" stroke-width="6" stroke-linecap="round"/></svg></template>
+  <dialog id="account-dialog" aria-labelledby="account-title">
+    <div class="dialog-header"><span class="eyebrow">SUA CONTA</span><button id="close-account" class="close-button" type="button">Fechar ×</button></div>
+    <h2 id="account-title">Minha Conta</h2>
+    <p id="account-message" role="status" aria-live="polite"></p>
+    <dl id="account-details" class="account-details" hidden><dt>Nome</dt><dd id="my-name"></dd><dt>E-mail</dt><dd id="my-email"></dd></dl>
+    <p class="catalog-note">Pedidos e carrinho estarão disponíveis em uma próxima etapa. Nenhuma compra pode ser realizada agora.</p>
+  </dialog>
   <dialog id="auth-dialog" aria-labelledby="auth-title">
     <div class="dialog-header"><span class="eyebrow">SUA CONTA HELMET STORE</span><button id="close-auth" class="close-button" type="button" aria-label="Fechar acesso à conta">Fechar ×</button></div>
     <h2 id="auth-title">Bem-vindo de volta.</h2>

@@ -36,9 +36,14 @@ test('Autorização administrativa e promoção isoladas', async t => {
       await t.test(`customer não pode ${method} nem forjar role`, () => request(method, route, 403, customer.cookie, { ...data, role: 'admin' }, { 'X-Role': 'admin' }));
     }
     let created;
-    await t.test('admin pode POST', async () => { created = await request('POST', '/api/products', 201, admin.cookie, data); });
+    await t.test('admin pode POST e campos internos são ignorados', async () => {
+      created = await request('POST', '/api/products', 201, admin.cookie, { ...data, id: 999999, role: 'admin', password_hash: 'injected' });
+      assert.notEqual(created.id, 999999);
+      assert.deepEqual(created, { id: created.id, ...data });
+    });
     await t.test('admin pode PUT', async () => {
-      assert.equal((await request('PUT', `/api/products/${created.id}`, 200, admin.cookie, { ...data, stock: 8 })).stock, 8);
+      assert.deepEqual(await request('PUT', `/api/products/${created.id}`, 200, admin.cookie,
+        { ...data, stock: 8, id: 999999, role: 'admin' }), { ...data, stock: 8, id: created.id });
     });
     await t.test('admin pode DELETE', () => request('DELETE', `/api/products/${created.id}`, 200, admin.cookie));
     await t.test('validações e proteção CSRF preservadas', async () => {

@@ -44,13 +44,15 @@ test('Autenticação HTTP com SQLite isolado e sessões persistentes', async t =
       await request('register', 403, profile, null, false);
     });
     await t.test('cadastro válido, role fixa e hash seguro', async () => {
-      const result = await request('register', 201, profile);
+      const result = await request('register', 201, { ...profile, id: 999999, password_hash: 'injected', created_at: 'injected' });
       user = result.data.user;
       assert.equal(user.role, 'customer'); assert.equal(user.email, 'person@example.test'); assert.equal(user.name, 'Pessoa Teste');
       const [stored] = await sqlite.query('SELECT * FROM users WHERE id = ?', [user.id]);
       assert.match(stored.password_hash, /^scrypt\$131072\$8\$1\$/);
       assert.notEqual(stored.password_hash, profile.password);
       assert(stored.created_at);
+      assert.notEqual(stored.id, 999999);
+      assert.notEqual(stored.created_at, 'injected');
     });
     await t.test('email duplicado normalizado', () => request('register', 409, { ...profile, email: 'person@example.test' }));
     await t.test('login incorreto não distingue email e senha', async () => {
@@ -68,6 +70,14 @@ test('Autenticação HTTP com SQLite isolado e sessões persistentes', async t =
       const [stored] = await sqlite.query('SELECT * FROM sessions');
       assert.notEqual(stored.token_hash, cookie.split('=')[1]);
       assert.deepEqual((await request('me', 200)).data.user, user);
+    });
+    await t.test('me identifica somente a própria sessão e ignora seleção de conta por query', async () => {
+      const other = await require('./helpers/session')(sqlite, 'customer');
+      assert.deepEqual((await request(`me?id=${other.id}&email=${other.email}&role=admin`, 200)).data.user, user);
+      const result = await request(`me?id=${user.id}`, 200, undefined, other.cookie);
+      assert.equal(result.data.user.id, other.id);
+      assert.equal(result.data.user.email, other.email);
+      assert.equal(result.data.user.role, 'customer');
     });
     await t.test('sessão sobrevive à reabertura do banco e login rotaciona cookie', async () => {
       sqlite.close(); sqlite = require('../backend/src/database/sqlite')(filename); connection.query = sqlite.query;

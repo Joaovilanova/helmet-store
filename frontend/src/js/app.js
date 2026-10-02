@@ -9,6 +9,9 @@ const detailStatus = document.querySelector('#detail-status');
 const detailContent = document.querySelector('#detail-content');
 const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 let detailController;
+let catalogProducts = [];
+let catalogReady = false;
+let catalogRevision = 0;
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -51,14 +54,38 @@ async function openDetails(id) {
     const product = await requestProductData(`/api/products/${encodeURIComponent(id)}`, controller.signal);
     if (controller.signal.aborted) return;
     detailTitle.textContent = product.name;
-    detailContent.append(helmetVisual(), ...productInfo(product), element('p', 'catalog-note', 'Produto fictício para demonstração acadêmica. Ilustração conceitual.'));
+    detailContent.append(helmetVisual(), ...productInfo(product), element('p', 'catalog-note', 'Modelo demonstrativo. Ilustração conceitual. Carrinho e seleção de quantidade estarão disponíveis em uma próxima etapa; compras ainda não estão habilitadas.'));
     detailStatus.textContent = '';
   } catch (error) {
     if (error.name !== 'AbortError') detailStatus.textContent = 'Não foi possível carregar este capacete. Feche os detalhes e tente novamente.';
   }
 }
 
+function renderCatalog() {
+  if (!catalogReady) return;
+  const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
+  const query = normalize(document.querySelector('#search-products').value.trim().slice(0, 120));
+  const products = catalogProducts.filter(product => normalize(`${product.name} ${product.category} ${product.description}`).includes(query));
+  grid.replaceChildren();
+  const cards = products.map(product => {
+    const card = element('article', 'product-card');
+    const info = element('div', 'product-info');
+    const [category, description, price, stock] = productInfo(product);
+    const button = element('button', 'button button-outline', 'Ver detalhes ↗');
+    button.type = 'button';
+    button.setAttribute('aria-label', `Ver detalhes de ${product.name}`);
+    button.addEventListener('click', () => openDetails(product.id));
+    info.append(category, element('h3', '', product.name), description, price, stock, button);
+    card.append(helmetVisual(), info);
+    return card;
+  });
+  grid.append(...cards);
+  status.textContent = products.length ? `${products.length} capacete(s) encontrado(s).` : (query ? 'Nenhum capacete encontrado para esta busca.' : 'Nenhum capacete disponível no momento. Volte em breve!');
+}
+
 async function loadProducts() {
+  const current = ++catalogRevision;
+  catalogReady = false;
   status.textContent = 'Carregando capacetes…';
   retry.hidden = true;
   grid.setAttribute('aria-busy', 'true');
@@ -66,31 +93,28 @@ async function loadProducts() {
   try {
     const products = await requestProductData('/api/products');
     if (!Array.isArray(products)) throw new Error('Resposta inválida');
-    const cards = products.map(product => {
-      const card = element('article', 'product-card');
-      const info = element('div', 'product-info');
-      const [category, description, price, stock] = productInfo(product);
-      const button = element('button', 'button button-outline', 'Ver detalhes ↗');
-      button.type = 'button';
-      button.setAttribute('aria-label', `Ver detalhes de ${product.name}`);
-      button.addEventListener('click', () => openDetails(product.id));
-      info.append(category, element('h3', '', product.name), description, price, stock, button);
-      card.append(helmetVisual(), info);
-      return card;
-    });
-    grid.append(...cards);
-    status.textContent = products.length ? '' : 'Nenhum capacete disponível no momento. Volte em breve!';
+    if (current !== catalogRevision) return;
+    catalogProducts = products;
+    catalogReady = true;
+    renderCatalog();
   } catch {
+    if (current !== catalogRevision) return;
     status.textContent = 'Não foi possível carregar os capacetes. Verifique sua conexão e tente novamente.';
     retry.hidden = false;
   } finally {
-    grid.setAttribute('aria-busy', 'false');
+    if (current === catalogRevision) grid.setAttribute('aria-busy', 'false');
   }
 }
 
 document.querySelector('.hero-helmet').append(document.querySelector('#helmet-art').content.cloneNode(true));
 document.querySelector('#close-dialog').addEventListener('click', () => dialog.close());
 dialog.addEventListener('close', () => detailController?.abort());
+document.querySelector('#catalog-search').addEventListener('submit', event => {
+  event.preventDefault();
+  renderCatalog();
+  document.querySelector('#capacetes').scrollIntoView();
+});
+document.querySelector('#search-products').addEventListener('input', renderCatalog);
 retry.addEventListener('click', loadProducts);
 window.addEventListener('helmet:products-changed', loadProducts);
 loadProducts();

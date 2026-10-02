@@ -80,3 +80,19 @@ Dados dinâmicos usam textContent. Todos os erros são exibidos como texto.
 
 `npm test` inclui testes de autorização, promoção isolada, autenticação e produtos.
 `npm run vercel-build` gera os assets. `npm start` mantém a execução local.
+
+## Menor privilégio e exposição de dados
+
+O cadastro ignora role e campos internos enviados pelo cliente. A persistência
+seleciona explicitamente os campos permitidos; não há atualização pública de role.
+`/api/auth/me` não aceita selecionar outra conta por ID/e-mail: usa a sessão.
+Não existe nesta fase uma listagem administrativa de usuários ou pedidos.
+
+A função `backend/src/utils/mask-email.js` está disponível para apresentação
+parcial de e-mail em futuros contextos que a justifiquem. Não a use para gravar
+no banco ou autenticar. Não registre senhas, tokens, cookies ou conexão; o script
+de promoção continua sem imprimir identificadores pessoais.
+
+A role admin da loja não concede acesso direto ao Neon. A revisão local não
+alterou permissões da infraestrutura. Veja [roadmap](ecommerce-roadmap.md) para
+as limitações da conexão atual e a separação futura de migrações e execução.

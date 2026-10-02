@@ -1,6 +1,6 @@
 # Helmet Store
 
-Projeto individual de **João Victor**, desenvolvido para fins acadêmicos. A Helmet Store é uma loja fictícia de capacetes com catálogo público, autenticação de usuários e administração de produtos. A interface é responsiva e se comunica com uma API própria, com dados persistidos em banco.
+Projeto individual de **João Victor**, iniciado para fins acadêmicos e em evolução gradual para uma loja de capacetes. A Helmet Store possui catálogo público, autenticação de usuários e administração de produtos. A interface é responsiva e se comunica com uma API própria, com dados persistidos em banco. Esta versão ainda não realiza vendas.
 
 ## Objetivo acadêmico
 
@@ -12,6 +12,8 @@ Os produtos, preços, estoques e ilustrações são demonstrativos. Não represe
 
 - Catálogo carregado pela API, com nome, descrição, categoria, preço em reais e estoque.
 - Modal de detalhes com consulta individual do produto.
+- Busca local por nome, categoria e descrição no catálogo carregado da API.
+- Minha Conta consulta a sessão e mostra nome e e-mail somente da própria conta.
 - Cadastro de usuários e login/logout.
 - Sessões persistidas no banco, restauradas visualmente ao recarregar a página.
 - Perfis `customer` e `admin`, com permissões verificadas no backend.
@@ -104,7 +106,7 @@ git diff --check
 
 A suíte utiliza bancos SQLite temporários e verifica CRUD, validações, cadastro, login, sessão, logout, autorização administrativa, promoção de usuário e respostas sem informações internas. O driver Neon é exercitado com transporte HTTP simulado, sem acesso a credenciais ou ao banco de produção.
 
-No fechamento documental, o executor registrou **29 testes aprovados**, contando os subtestes. Isso não representa cobertura total do código nem substitui testes de integração com um PostgreSQL real. A responsividade e a interação visual são verificadas separadamente no navegador, não por `npm test`.
+A suíte inclui testes de salt individual, mascaramento e isolamento de conta. Consulte o resultado de cada execução de `npm test`; a presença de testes não comprova sua aprovação. Eles não representam cobertura total nem substituem integração com PostgreSQL real ou verificação visual no navegador.
 
 O build copia `frontend/src/` para `public/` e verifica a presença dos arquivos essenciais. Ele não publica a aplicação e não executa os testes automaticamente. A saída gerada não deve ser editada manualmente.
 
@@ -173,6 +175,37 @@ um usuário com permissão para executar a operação. As duas continuam necess�
 Dados dinâmicos são exibidos com `textContent` e erros possuem mensagens amigáveis.
 
 Máscaras de entrada não foram aplicadas porque o sistema não coleta dados como CPF, telefone ou CEP; foram utilizados tipos de input e validações adequados aos campos existentes.
+
+## Segurança no armazenamento
+
+- **Hashing + salt:** scrypt assíncrono com salt aleatório individual de 16 bytes,
+  hash de 64 bytes e comparação com `timingSafeEqual`. A API seleciona apenas os
+  dados públicos da conta; senhas e hashes não são retornados.
+- **Menor privilégio:** cadastro fixa `customer`; sessão e role atual do banco
+  autorizam escritas de produtos por middleware (401 sem sessão, 403 sem permissão).
+  Campos de cadastro e persistência de produtos são selecionados explicitamente;
+  enviar `role`, `id` ou `password_hash` não permite alterá-los. `/api/auth/me`
+  identifica somente a conta da sessão. Não existe endpoint público de mudança de role.
+- **Mascaramento:** `backend/src/utils/mask-email.js` oferece apresentação parcial
+  de e-mail, sem modificar dados persistidos. Está disponível para usos futuros;
+  não foi criado painel de usuários ou log de dados pessoais. Minha Conta mantém
+  o endereço integral para seu titular. Mascaramento não substitui autorização,
+  hashing ou criptografia e não torna um e-mail anônimo.
+- **Segredos:** conexão em variável de ambiente no servidor; não registrar senhas,
+  cookies, tokens ou strings de conexão. Os caminhos auditados não registram esses
+  dados e devolvem erros internos genéricos. Configurações externas de logs não
+  foram verificadas nesta revisão local.
+- **Criptografia em repouso:** SQLite local não é criptografado pela aplicação.
+  PostgreSQL/Neon é a infraestrutura de produção; garantias de criptografia de
+  dados, backups e gestão de chaves devem ser verificadas no provedor e ambiente
+  utilizados. Não afirmamos que foram comprovadas nesta revisão. A aplicação não
+  implementa criptografia própria do banco. Hashing de senha e `.gitignore` não
+  equivalem a criptografia em repouso.
+
+A conexão atual também inicializa tabelas e precisa de permissões de criação.
+Roles customer/admin protegem a API, mas não demonstram menor privilégio completo
+na infraestrutura PostgreSQL. Separar migração e execução faz parte da evolução
+planejada em [E-commerce: fases e responsabilidades](docs/ecommerce-roadmap.md).
 
 ## Banco de dados
 

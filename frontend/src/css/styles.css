@@ -7,6 +7,16 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
 
 .account-area{display:flex;align-items:center;gap:12px;min-width:0}
+.site-header{flex-wrap:wrap}
+.catalog-search{flex:1 1 100%;min-width:0;max-width:620px}
+.catalog-search label{display:block;font-size:13px;margin-bottom:8px;color:var(--muted)}
+.catalog-search>div{display:flex;gap:10px}
+.catalog-search input{flex:1;min-width:0;width:100%;background:var(--bg);color:var(--text);border:1px solid #59634f;border-radius:4px;padding:12px;font:inherit}
+.catalog-search input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.catalog-search input:hover{border-color:var(--accent)}
+.account-details dt{color:var(--muted);font-size:13px;margin-top:16px}
+.account-details dd{margin:6px 0 20px;overflow-wrap:anywhere}
+@media(max-width:640px){.catalog-search{order:4}.catalog-search .button{padding-inline:14px}.account-area{max-width:100%}}
 .account-area{flex-wrap:wrap}
 .admin-panel{padding-block:48px;border-top:1px solid var(--line)}
 .admin-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}

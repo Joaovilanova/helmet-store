@@ -33,6 +33,11 @@
 
   function setUser(user) {
     $('#open-auth').hidden = Boolean(user);
+    $('#open-account').hidden = !user;
+    $('#account-details').hidden = true;
+    $('#my-name').textContent = '';
+    $('#my-email').textContent = '';
+    if (!user) $('#account-dialog').close();
     $('#account-name').hidden = !user;
     $('#account-name').textContent = user ? user.name : '';
     $('#logout').hidden = !user;
@@ -73,6 +78,34 @@
   }
 
   $('#open-auth').addEventListener('click', () => { mode(false); dialog.showModal(); $('#auth-email').focus(); });
+  $('#open-account').addEventListener('click', async () => {
+    const current = revision;
+    $('#account-details').hidden = true;
+    $('#account-message').textContent = 'Carregando sua conta…';
+    $('#account-dialog').showModal();
+    try {
+      const { user } = await request('me');
+      if (current !== revision || !$('#account-dialog').open) return;
+      setUser(user);
+      $('#my-name').textContent = user.name;
+      $('#my-email').textContent = user.email;
+      $('#account-details').hidden = false;
+      $('#account-message').textContent = '';
+    } catch (error) {
+      if (current !== revision) return;
+      if (error.status === 401) {
+        revision++;
+        setUser(null);
+        $('#account-status').textContent = 'Sua sessão expirou. Entre novamente.';
+      } else $('#account-message').textContent = error.message;
+    }
+  });
+  $('#close-account').addEventListener('click', () => $('#account-dialog').close());
+  $('#account-dialog').addEventListener('close', () => {
+    $('#my-name').textContent = '';
+    $('#my-email').textContent = '';
+    $('#account-details').hidden = true;
+  });
   $('#close-auth').addEventListener('click', () => dialog.close());
   dialog.addEventListener('close', () => { $('#auth-password').value = ''; });
   $('#switch-auth').addEventListener('click', () => { mode(!register); (register ? $('#auth-name') : $('#auth-email')).focus(); });

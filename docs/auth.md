@@ -1,6 +1,6 @@
 # Contas e autenticação
 
-Execute `npm start` com Node 22. Abra a página e escolha Entrar / Cadastre-se.
+Execute `npm start` com Node 22. Abra a página e escolha Minha Conta / Entrar e depois Cadastre-se.
 O cadastro não inicia sessão automaticamente: após a confirmação, faça login.
 `npm test` executa os testes isolados de autenticação e produtos/banco.
 `npm run vercel-build` gera o frontend em `public/`.
